@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% block title %}Personal Stress Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h2>Personal Stress Dashboard</h2>
+        <div class="header-accent"></div>
+        <a href="{% url 'generate_report' %}" class="btn-generate-report">Generate Report</a>
+    </div>
+
+    <!-- Metrics Section -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <i class="fas fa-chart-bar"></i>
+            <h3>Average Stress Score</h3>
+            <p>{{ avg_score|floatformat:1 }}</p>
+        </div>
+        <div class="metric-card">
+            <i class="fas fa-arrow-trend-up"></i>
+            <h3>Recent Trend</h3>
+            <p>{{ recent_trend }}</p>
+        </div>
+        <div class="metric-card">
+            <i class="fas fa-keyboard"></i>
+            <h3>Avg Keystrokes/Min</h3>
+            <p>{{ keyboard_avg|floatformat:0 }}</p>
+        </div>
+        <div class="metric-card">
+            <i class="fas fa-tv"></i>
+            <h3>Total Screen Time</h3>
+            <p>{{ screen_time_hours|floatformat:2 }} hrs</p>
+        </div>
+    </div>
+
+    <!-- Stress Chart -->
+    <div class="chart-section">
+        <h3>Stress Trend Over Time</h3>
+        <div id="stressChart" style="width: 100%; height: 400px;"></div>
+    </div>
+
+    <!-- Recommendations Section -->
+    <div class="recommendations-container">
+        <h3>Current Recommendations</h3>
+        {% if recommendations %}
+            <ul class="recommendations-list">
+                {% for rec in recommendations %}
+                    <li class="recommendation-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <div class="rec-content">
+                            <span class="rec-text">{{ rec.recommendation_text }}</span>
+                            <span class="rec-category">({{ rec.category }})</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-recs">No recommendations available at this time.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('stressChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ stress_data|safe }}.dates,
+            datasets: [{
+                label: 'Stress Score',
+                data: {{ stress_data|safe }}.scores,
+                borderColor: 'var(--primary-blue)',
+                backgroundColor: 'rgba(42, 94, 232, 0.2)',
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: 'var(--primary-blue)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: 'var(--accent-orange)',
+                pointHoverBorderColor: 'var(--primary-blue)',
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Stress Score',
+                        color: 'var(--dark-blue)',
+                        font: { size: 14, weight: '600' }
+                    },
+                    ticks: { color: '#555', font: { size: 12 } },
+                    grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: 'var(--dark-blue)',
+                        font: { size: 14, weight: '600' }
+                    },
+                    ticks: { color: '#555', font: { size: 12 } },
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'var(--dark-blue)',
+                        font: { size: 14 }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'var(--dark-blue)',
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 12 },
+                    padding: 10
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.dashboard-container {
+    padding: 2.5rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+h2 {
+    color: var(--dark-blue);
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header-accent {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--accent-orange));
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+.btn-generate-report {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background: var(--primary-blue);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(42, 94, 232, 0.3);
+}
+
+.btn-generate-report:hover {
+    background: var(--accent-orange);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+h3 {
+    color: var(--dark-blue);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.metric-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px var(--shadow-color);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(42, 94, 232, 0.1);
+}
+
+.metric-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.metric-card i {
+    font-size: 2.5rem;
+    color: var(--primary-blue);
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.metric-card:hover i {
+    color: var(--accent-orange);
+}
+
+.metric-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-blue);
+}
+
+.metric-card p {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #222;
+    margin-top: 0.5rem;
+}
+
+/* Chart Section */
+.chart-section {
+    margin-bottom: 3rem;
+}
+
+/* Recommendations */
+.recommendations-container {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px var(--shadow-color);
+}
+
+.recommendations-list {
+    list-style: none;
+    padding: 0;
+}
+
+.recommendation-item {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background 0.3s ease;
+}
+
+.recommendation-item:hover {
+    background: rgba(42, 94, 232, 0.05);
+}
+
+.recommendation-item:last-child {
+    border-bottom: none;
+}
+
+.recommendation-item i {
+    font-size: 1.2rem;
+    color: var(--primary-blue);
+    margin-right: 1rem;
+}
+
+.rec-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rec-text {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.rec-category {
+    font-size: 0.95rem;
+    color: var(--accent-orange);
+    font-weight: 500;
+    font-style: italic;
+}
+
+.no-recs {
+    font-size: 1.1rem;
+    color: #777;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 2.2rem;
+    }
+
+    h3 {
+        font-size: 1.4rem;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .metric-card {
+        padding: 1.5rem;
+    }
+
+    .metric-card i {
+        font-size: 2rem;
+    }
+
+    .metric-card p {
+        font-size: 1.5rem;
+    }
+
+    .recommendations-container {
+        padding: 1.5rem;
+    }
+
+    .btn-generate-report {
+        padding: 0.6rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .metric-card h3 {
+        font-size: 1rem;
+    }
+
+    .rec-text {
+        font-size: 1rem;
+    }
+
+    .rec-category {
+        font-size: 0.85rem;
+    }
+}
+</style>
+{% endblock %}

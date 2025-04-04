@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block title %}Generate Stress Report{% endblock %}
+{% block content %}
+<div class="report-container">
+    <div class="report-header">
+        <h2>Generate Stress Report</h2>
+        <div class="header-accent"></div>
+    </div>
+
+    <form method="POST" class="report-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="report_type">Report Type:</label>
+            <select name="report_type" id="report_type" class="form-select">
+                <option value="personal">Personal</option>
+                <option value="summary">Summary</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" name="start_date" id="start_date" class="form-input">
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="date" name="end_date" id="end_date" class="form-input">
+        </div>
+        <button type="submit" class="btn-generate">Generate Report</button>
+    </form>
+</div>
+
+<style>
+.report-container {
+    padding: 2.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.report-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+h2 {
+    color: var(--dark-blue);
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header-accent {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--accent-orange));
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+/* Form Styling */
+.report-form {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    color: var(--dark-blue);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.form-select, .form-input {
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid rgba(42, 94, 232, 0.3);
+    border-radius: 8px;
+    background: var(--light-bg);
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 8px rgba(42, 94, 232, 0.3);
+}
+
+.form-select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    padding-right: 2rem;
+}
+
+.btn-generate {
+    padding: 0.8rem 2rem;
+    background: var(--primary-blue);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(42, 94, 232, 0.3);
+    align-self: center;
+}
+
+.btn-generate:hover {
+    background: var(--accent-orange);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .report-container {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 2.2rem;
+    }
+
+    .report-form {
+        padding: 1.5rem;
+    }
+
+    .form-select, .form-input {
+        padding: 0.6rem;
+        font-size: 0.95rem;
+    }
+
+    .btn-generate {
+        padding: 0.6rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    label {
+        font-size: 1rem;
+    }
+
+    .form-select, .form-input {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

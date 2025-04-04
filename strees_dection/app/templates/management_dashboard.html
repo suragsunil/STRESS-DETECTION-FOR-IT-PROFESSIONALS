@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Dashboard | Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-color);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            z-index: -1;
+            opacity: 0.6;
+        }
+        
+        .navbar {
+            background: var(--secondary-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background: #fff;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card {
+            padding: 1.8rem;
+            border-left: 5px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg);
+            z-index: 0;
+        }
+        
+        .stat-card h4 {
+            color: #6c757d;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            position: relative;
+        }
+        
+        .stat-card h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .stat-card i {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 2.5rem;
+            opacity: 0.2;
+            color: var(--primary-color);
+        }
+        
+        .btn-custom {
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-custom:hover {
+            background: #2980b9;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #f1f3f5;
+        }
+        
+        .table tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .badge-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .badge-success {
+            background-color: var(--success-color);
+        }
+        
+        .badge-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .badge-info {
+            background-color: var(--info-color);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        .error-message {
+            background: var(--danger-color);
+            color: #fff;
+            padding: 1.5rem;
+            text-align: center;
+            border-radius: 12px;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+        
+        .progress-bar {
+            background-color: var(--primary-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                margin: 2rem 0 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stat-card h2 {
+                font-size: 1.6rem;
+            }
+            
+            .stat-card i {
+                font-size: 2rem;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt"></i> Management Dashboard <span class="badge bg-accent ms-2">Admin</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <a href="{% url 'admin_manage_users' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                        <i class="fas fa-users me-1"></i> Manage Users
+                    </a>
+                    <a href="#" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                        <i class="fas fa-file-alt me-1"></i> Manage Reports
+                    </a>
+                    <a href="{% url 'admin_logout' %}" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Summary Statistics -->
+        <div class="row mb-4" data-aos="fade-up">
+            <div class="col-md-3 mb-4">
+                <div class="card stat-card">
+                    <i class="fas fa-users"></i>
+                    <h4>Total Users</h4>
+                    <h2>{{ total_users }}</h2>
+                    <div class="progress mt-2">
+                        <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card stat-card" style="border-left-color: var(--warning-color);">
+                    <i class="fas fa-chart-line" style="color: var(--warning-color);"></i>
+                    <h4>Average Stress</h4>
+                    <h2>{{ avg_stress|floatformat:2 }}</h2>
+                    <div class="progress mt-2">
+                        <div class="progress-bar bg-warning" role="progressbar" 
+                             style="width: {{ avg_stress|default:0|floatformat:0 }}%" 
+                             aria-valuenow="{{ avg_stress|default:0|floatformat:0 }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="10">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card stat-card" style="border-left-color: var(--info-color);">
+                    <i class="fas fa-building" style="color: var(--info-color);"></i>
+                    <h4>Departments</h4>
+                    <h2>{{ departments|length }}</h2>
+                    <div class="progress mt-2">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card stat-card" style="border-left-color: var(--success-color);">
+                    <i class="fas fa-calendar-alt" style="color: var(--success-color);"></i>
+                    <h4>Data Period</h4>
+                    <h2>30 Days</h2>
+                    <div class="progress mt-2">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Department Overview -->
+        <h2 class="section-title" data-aos="fade-up">
+            <i class="fas fa-building me-2"></i> Department Overview
+        </h2>
+        
+        <div class="row mt-4" data-aos="fade-up">
+            <div class="col-md-12">
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Avg Stress</th>
+                                    <th>Total Users</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dept in departments %}
+                                <tr>
+                                    <td><strong>{{ dept.department|default:"N/A" }}</strong></td>
+                                    <td>
+                                        {% if dept.avg_stress %}
+                                            {% if dept.avg_stress > 7 %}
+                                                <span class="badge bg-danger">{{ dept.avg_stress|floatformat:2 }}</span>
+                                            {% elif dept.avg_stress > 4 %}
+                                                <span class="badge bg-warning">{{ dept.avg_stress|floatformat:2 }}</span>
+                                            {% else %}
+                                                <span class="badge bg-success">{{ dept.avg_stress|floatformat:2 }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">0.00</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ dept.total_users }}</span>
+                                    </td>
+                                    <td>
+                                        {% if dept.avg_stress %}
+                                            {% if dept.avg_stress > 7 %}
+                                                <span class="badge bg-danger">Critical</span>
+                                            {% elif dept.avg_stress > 4 %}
+                                                <span class="badge bg-warning">Warning</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Normal</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">No Data</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i> No department data available.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stress Trend Chart -->
+        <h2 class="section-title" data-aos="fade-up">
+            <i class="fas fa-chart-line me-2"></i> Average Stress Trend (Last 30 Days)
+        </h2>
+        
+        <div class="row mt-4" data-aos="fade-up">
+            <div class="col-md-12">
+                <div class="card p-4">
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    {% if not trend_data.dates %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle me-2"></i> No stress trend data available for the past 30 days.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Add active class to current nav link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUrl = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.classList.add('active');
+                    link.classList.add('shadow');
+                }
+            });
+
+            // Chart initialization
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const trendData = {{ trend_data|safe }};
+
+            // Validate trend data
+            if (!trendData || !trendData.dates || !trendData.scores || trendData.dates.length === 0) {
+                console.warn('No trend data available to display.');
+                return;
+            }
+
+            try {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: trendData.dates,
+                        datasets: [{
+                            label: 'Average Stress Score',
+                            data: trendData.scores,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: function(context) {
+                                const value = context.dataset.data[context.dataIndex];
+                                if (value > 7) return '#dc3545';
+                                if (value > 4) return '#ffc107';
+                                return '#28a745';
+                            },
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#2980b9',
+                            pointHoverBorderColor: '#3498db',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 10,
+                                title: {
+                                    display: true,
+                                    text: 'Average Stress Score',
+                                    color: '#2c3e50',
+                                    font: { size: 14, weight: '600' }
+                                },
+                                ticks: { 
+                                    color: '#555', 
+                                    font: { size: 12 },
+                                    callback: function(value) {
+                                        return Number(value).toFixed(1);
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date',
+                                    color: '#2c3e50',
+                                    font: { size: 14, weight: '600' }
+                                },
+                                ticks: { 
+                                    color: '#555', 
+                                    font: { size: 12 },
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#2c3e50',
+                                    font: { size: 14 },
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: '#2c3e50',
+                                titleFont: { size: 14, weight: '600' },
+                                bodyFont: { size: 12 },
+                                padding: 12,
+                                cornerRadius: 8,
+                                usePointStyle: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Stress: ${context.parsed.y.toFixed(2)}`;
+                                    },
+                                    labelColor: function(context) {
+                                        return {
+                                            borderColor: 'transparent',
+                                            backgroundColor: context.dataset.borderColor,
+                                            borderRadius: 6
+                                        };
+                                    }
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        yMin: 7,
+                                        yMax: 7,
+                                        borderColor: '#dc3545',
+                                        borderWidth: 1,
+                                        borderDash: [6, 6],
+                                        label: {
+                                            content: 'Critical Threshold',
+                                            enabled: true,
+                                            position: 'left',
+                                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                                            font: { size: 10 }
+                                        }
+                                    },
+                                    line2: {
+                                        type: 'line',
+                                        yMin: 4,
+                                        yMax: 4,
+                                        borderColor: '#ffc107',
+                                        borderWidth: 1,
+                                        borderDash: [6, 6],
+                                        label: {
+                                            content: 'Warning Threshold',
+                                            enabled: true,
+                                            position: 'left',
+                                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                                            font: { size: 10 }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error rendering stress trend chart:', error);
+            }
+        });
+    </script>
+</body>
+</html>

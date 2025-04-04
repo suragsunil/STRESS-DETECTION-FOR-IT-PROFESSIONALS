@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGuard Pro | User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-blue: #2A5EE8;
+            --dark-blue: #1A3A7A;
+            --accent-orange: #FF6B35;
+            --light-bg: #F8FAFF;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(42, 94, 232, 0.1), rgba(255, 107, 53, 0.1));
+            animation: gradientFlow 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientFlow {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(100px) translateY(100px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            padding: 1.2rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-orange);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-orange);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+            perspective: 1000px; /* For 3D effect */
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: var(--dark-blue);
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin: 2rem 0 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .card p strong {
+            color: var(--dark-blue);
+            margin-right: 0.5rem;
+        }
+
+        #stressChart {
+            max-width: 100%;
+            height: auto;
+            transition: transform 0.4s ease;
+        }
+
+        .chart-container {
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .chart-container:hover #stressChart {
+            transform: translateZ(20px) rotateX(10deg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.4s ease, background 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .stat-item:hover {
+            transform: translateZ(15px) rotateY(10deg);
+            background: rgba(42, 94, 232, 0.05);
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+        }
+
+        .stat-item strong {
+            color: var(--accent-orange);
+            font-size: 1.3rem;
+        }
+
+        .no-data {
+            background: rgba(42, 94, 232, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 992px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--dark-blue);
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-item {
+                width: 100%;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 80px 1rem 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card p, .stat-item p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                StressGuard Pro
+            </div>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="/settings/" class="nav-link">Settings</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/userprofile/" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/user_logout/" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/data_collection_dashboard/" class="nav-link">Data Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>User Dashboard</h1>
+
+        <div class="card">
+            <h2>Latest Stress Assessment</h2>
+            {% if latest_assessment %}
+            <p><strong>Date:</strong> {{ latest_assessment.date|date:"F d, Y H:i" }}</p>
+            <p><strong>Stress Score:</strong> {{ latest_assessment.stress_score }}</p>
+            <p><strong>Recommendations:</strong> {{ latest_assessment.recommendations }}</p>
+            {% else %}
+            <div class="no-data">No assessments available.</div>
+            {% endif %}
+        </div>
+
+        <div class="card chart-container">
+            <h2>Stress Score Over Time</h2>
+            <canvas id="stressChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="card">
+            <h2>Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <p><strong>{{ total_assessments }}</strong></p>
+                    <p>Total Assessments</p>
+                </div>
+                <div class="stat-item">
+                    <p><strong>{{ avg_stress_score|floatformat:1 }}</strong></p>
+                    <p>Average Stress Score</p>
+                </div>
+                <div class="stat-item">
+                    <p><strong>{{ max_stress_score }}</strong></p>
+                    <p>Maximum Stress Score</p>
+                </div>
+                <div class="stat-item">
+                    <p><strong>{{ min_stress_score }}</strong></p>
+                    <p>Minimum Stress Score</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hamburger menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+
+        // Chart.js initialization with 3D-like animation
+        const ctx = document.getElementById('stressChart').getContext('2d');
+        const stressChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|safe }},
+                datasets: [{
+                    label: 'Stress Score',
+                    data: {{ scores|safe }},
+                    borderColor: 'rgba(255, 107, 53, 1)', // Accent orange
+                    backgroundColor: 'rgba(42, 94, 232, 0.2)', // Primary blue with opacity
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(255, 107, 53, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(255, 107, 53, 1)',
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        ticks: { color: '#333' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#333' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#333', font: { size: 14 } }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutBounce',
+                    onComplete: () => {
+                        document.getElementById('stressChart').style.transform = 'translateZ(0)';
+                    }
+                }
+            }
+        });
+
+        // 3D hover effect for cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                card.style.transform = `translateZ(20px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateZ(0) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressDetect - Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #ffcc00;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --white: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --grey-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--light-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="2" fill="rgba(0, 123, 255, 0.05)"/></svg>') repeat;
+            z-index: -1;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #0062cc);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Registration Container */
+        .registration-container {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            width: 100%;
+            max-width: 700px;
+            margin: 6rem 2rem 2rem;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .registration-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .registration-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .registration-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .registration-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .registration-form {
+            padding: 2.5rem;
+        }
+
+        .form-progress {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        input, select, .file-input-container {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--white);
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .file-input-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .file-input-container input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--grey-color);
+        }
+
+        .add-department-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        #add_department {
+            background: var(--secondary-color);
+            color: var(--dark-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #add_department:hover {
+            background: #e6b800;
+        }
+
+        button[type="submit"] {
+            background: var(--primary-color);
+            color: var(--white);
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        button[type="submit"]:hover {
+            background: #0062cc;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .registration-container {
+                margin: 5rem 1rem 1rem;
+            }
+
+            .registration-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .registration-header p {
+                font-size: 0.9rem;
+            }
+
+            input, select, .file-input-container {
+                padding: 0.8rem;
+            }
+
+            button[type="submit"] {
+                padding: 0.9rem;
+                font-size: 1rem;
+            }
+
+            .registration-logo {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fas fa-heartbeat"></i>StressDetect
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Registration Form -->
+    <div class="registration-container">
+        <div class="registration-header">
+            <div class="logo-container">
+                <div class="registration-logo">
+                    <i class="fas fa-user-plus fa-lg" style="color: var(--primary-color);"></i>
+                </div>
+                <h1>Create Your Account</h1>
+            </div>
+            <p>Join our professional stress monitoring community</p>
+        </div>
+
+        <form id="registrationForm" method="POST" enctype="multipart/form-data" class="registration-form">
+            {% csrf_token %}
+            <div class="form-progress">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" placeholder="John" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" placeholder="Doe" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email_id">Email Address</label>
+                <input type="email" id="email_id" name="email_id" placeholder="john.doe@example.com" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required
+                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}"
+                           title="Password must be at least 8 characters and include one number, one uppercase, one lowercase, and one special character.">
+                    <div id="passwordError" class="error hidden">Password must meet complexity requirements.</div>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+                    <div id="confirmPasswordError" class="error hidden">Passwords do not match.</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <div class="file-input-container">
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <label class="file-input-label" for="image">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Choose profile photo...</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" name="department" required>
+                    <option value="">Select Department</option>
+                    <option value="IT">IT</option>
+                    <option value="HR">HR</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="add_new">Add New Department</option>
+                </select>
+                <div class="add-department-container hidden" id="add_department_container">
+                    <input type="text" id="new_department" placeholder="New department name">
+                    <button type="button" id="add_department">Add</button>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="years_of_experience">Experience (Years)</label>
+                    <input type="number" id="years_of_experience" name="years_of_experience" min="0" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="work_role">Work Role</label>
+                    <input type="text" id="work_role" name="work_role" placeholder="E.g., Software Engineer" required>
+                </div>
+            </div>
+
+            <button type="submit">Complete Registration</button>
+        </form>
+    </div>
+
+    <script>
+        // Department Management
+        const departmentSelect = document.getElementById('department');
+        const addDepartmentContainer = document.getElementById('add_department_container');
+        const newDepartmentInput = document.getElementById('new_department');
+        const addDepartmentButton = document.getElementById('add_department');
+
+        departmentSelect.addEventListener('change', function() {
+            addDepartmentContainer.classList.toggle('hidden', this.value !== 'add_new');
+            newDepartmentInput.required = this.value === 'add_new';
+        });
+
+        addDepartmentButton.addEventListener('click', () => {
+            const newDept = newDepartmentInput.value.trim();
+            if (!newDept) return;
+
+            const existing = Array.from(departmentSelect.options)
+                .some(option => option.value.toLowerCase() === newDept.toLowerCase());
+
+            if (!existing) {
+                const option = new Option(newDept, newDept);
+                departmentSelect.add(option);
+                departmentSelect.value = newDept;
+                addDepartmentContainer.classList.add('hidden');
+                newDepartmentInput.value = '';
+                showToast('Department added successfully!');
+            } else {
+                showToast('Department already exists!', 'error');
+            }
+        });
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.padding = '12px 24px';
+            toast.style.background = type === 'error' ? '#dc3545' : '#28a745';
+            toast.style.color = 'white';
+            toast.style.borderRadius = '8px';
+            toast.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Password Validation
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const passwordError = document.getElementById('passwordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+        passwordInput.addEventListener('input', validatePassword);
+        confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+            if (!pattern.test(password)) {
+                passwordError.classList.remove('hidden');
+            } else {
+                passwordError.classList.add('hidden');
+            }
+            updateProgress();
+        }
+
+        function validateConfirmPassword() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            if (password !== confirmPassword) {
+                confirmPasswordError.classList.remove('hidden');
+            } else {
+                confirmPasswordError.classList.add('hidden');
+            }
+            updateProgress();
+        }
+
+        // Form Progress Indicator
+        const form = document.getElementById('registrationForm');
+        const requiredInputs = form.querySelectorAll('input[required], select[required]');
+        const progressFill = document.getElementById('progressFill');
+
+        function updateProgress() {
+            const filledInputs = Array.from(requiredInputs).filter(input => input.value.trim() !== '').length;
+            const totalInputs = requiredInputs.length;
+            const percentage = (filledInputs / totalInputs) * 100;
+            progressFill.style.width = `${percentage}%`;
+        }
+
+        requiredInputs.forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+
+        // Form Submission Validation
+        form.addEventListener('submit', function(event) {
+            if (!passwordInput.value || !confirmPasswordInput.value ||
+                !passwordError.classList.contains('hidden') ||
+                !confirmPasswordError.classList.contains('hidden')) {
+                event.preventDefault();
+                showToast('Please fix the errors before submitting.', 'error');
+            }
+        });
+
+        // Initial setup
+        updateProgress();
+    </script>
+</body>
+</html>

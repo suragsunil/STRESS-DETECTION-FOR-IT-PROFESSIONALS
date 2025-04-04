@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressDetect - Profile | {{ user.first_name }} {{ user.last_name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #ffcc00;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --white: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --grey-color: #6c757d;
+            --accent-color: #00c4ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-color), #e6eef5);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        /* Subtle Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="2" fill="rgba(0, 123, 255, 0.05)"/></svg>') repeat;
+            z-index: -1;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #0062cc);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--secondary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Profile Container */
+        .profile-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            width: 100%;
+            max-width: 1000px;
+            margin: 6rem 2rem 2rem;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            height: 250px;
+            position: relative;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
+        }
+
+        .header-content {
+            z-index: 1;
+        }
+
+        .profile-name {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .profile-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .profile-image {
+            position: absolute;
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid var(--white);
+            border-radius: 50%;
+            box-shadow: 0 6px 15px var(--shadow-color);
+            width: 180px;
+            height: 180px;
+            background: var(--white);
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-content {
+            padding: 120px 40px 40px;
+            text-align: center;
+            background: var(--white);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .detail-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            padding: 0 20px;
+        }
+
+        .detail-card {
+            background: var(--light-color);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .detail-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .detail-card p {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--grey-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #0062cc;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                margin: 5rem 1rem 1rem;
+                max-width: 600px;
+            }
+
+            .profile-content {
+                padding: 100px 20px 30px;
+            }
+
+            .profile-name {
+                font-size: 2.2rem;
+            }
+
+            .profile-title {
+                font-size: 1.1rem;
+            }
+
+            .detail-section {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 10px;
+            }
+
+            .btn {
+                padding: 0.8rem 2rem;
+            }
+
+            .profile-image {
+                width: 140px;
+                height: 140px;
+                top: 160px;
+            }
+
+            .profile-header {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fas fa-heartbeat"></i>StressDetect
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'user_logout' %}" class="nav-link">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="header-content">
+                <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
+                <div class="profile-title">{{ user.work_role }} | {{ user.department }}</div>
+            </div>
+        </div>
+        
+        <div class="profile-image">
+            {% if user.image %}
+            <img src="{{ user.image.url }}" alt="{{ user.first_name }} {{ user.last_name }}">
+            {% else %}
+            <i class="fas fa-user fa-5x" style="color: var(--grey-color); padding-top: 40px;"></i>
+            {% endif %}
+        </div>
+
+        <div class="profile-content">
+            <div class="detail-section">
+                <div class="detail-card">
+                    <h3>Professional Experience</h3>
+                    <p>{{ user.years_of_experience }} Years</p>
+                </div>
+                <div class="detail-card">
+                    <h3>Department</h3>
+                    <p>{{ user.department }}</p>
+                </div>
+                <div class="detail-card">
+                    <h3>Email</h3>
+                    <p>{{ user.email_id }}</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="{% url 'userprofile_edit' user.id %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Update Profile
+                </a>
+                <a href="{% url 'usershome' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Go Back
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

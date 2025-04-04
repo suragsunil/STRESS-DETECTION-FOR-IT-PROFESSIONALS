@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGuard Pro | Data Collection Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-blue: #2A5EE8;
+            --dark-blue: #1A3A7A;
+            --accent-orange: #FF6B35;
+            --light-bg: #F8FAFF;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(42, 94, 232, 0.1), rgba(255, 107, 53, 0.1));
+            animation: gradientFlow 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientFlow {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(100px) translateY(100px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        nav {
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            padding: 1.2rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-orange);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-orange);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+            margin: 2rem 0 1rem;
+        }
+
+        .action-links {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .action-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+            display: inline-block;
+        }
+
+        .action-link:hover {
+            color: var(--accent-orange);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .table thead {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            font-weight: 600;
+        }
+
+        .table tr:hover {
+            background: var(--light-bg);
+        }
+
+        .table a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .table a:hover {
+            color: var(--accent-orange);
+        }
+
+        @media (max-width: 992px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--dark-blue);
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-item {
+                width: 100%;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .table th, .table td {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                StressGuard Pro
+            </div>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="/settings/" class="nav-link">Settings</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/userprofile/" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/user_logout/" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/data_collection_dashboard/" class="nav-link">Data Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Data Collection Dashboard</h1>
+        <h2>Welcome, {{ user.first_name }} {{ user.last_name }}</h2>
+        <div class="action-links">
+            <a href="{% url 'post_keyboard_activity' %}" class="action-link">Post Keyboard Activity</a>
+            <a href="{% url 'post_screen_time' %}" class="action-link">Post Screen Time</a>
+            <a href="{% url 'post_application_usage' %}" class="action-link">Post App Usage</a>
+            <a href="{% url 'post_voice_pattern' %}" class="action-link">Post Voice Pattern</a>
+            <a href="{% url 'post_wearable_data' %}" class="action-link">Post Wearable Data</a>
+        </div>
+
+        <div class="table-container">
+            <h3>Keyboard Activity</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Keystrokes/Minute</th>
+                        <th>Typing Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in keyboard_data %}
+                    <tr>
+                        <td>{{ data.timestamp }}</td>
+                        <td>{{ data.keystrokes_per_minute }}</td>
+                        <td>{{ data.typing_duration }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No data available</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h3>Screen Time</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Duration</th>
+                        <th>Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in screen_time_data %}
+                    <tr>
+                        <td>{{ data.timestamp }}</td>
+                        <td>{{ data.duration }}</td>
+                        <td>{{ data.application }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No data available</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h3>Application Usage</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>App Name</th>
+                        <th>Usage Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in app_usage_data %}
+                    <tr>
+                        <td>{{ data.timestamp }}</td>
+                        <td>{{ data.app_name }}</td>
+                        <td>{{ data.usage_duration }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No data available</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h3>Voice Patterns</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Stress Level</th>
+                        <th>Audio File</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in voice_data %}
+                    <tr>
+                        <td>{{ data.timestamp }}</td>
+                        <td>{{ data.stress_level|default:"N/A" }}</td>
+                        <td>{% if data.audio_file %}<a href="{{ data.audio_file.url }}">Download</a>{% else %}N/A{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3">No data available</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-container">
+            <h3>Wearable Device Data</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Device Type</th>
+                        <th>Heart Rate</th>
+                        <th>Steps</th>
+                        <th>Sleep Duration</th>
+                        <th>Stress Indicator</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in wearable_data %}
+                    <tr>
+                        <td>{{ data.timestamp }}</td>
+                        <td>{{ data.device_type }}</td>
+                        <td>{{ data.heart_rate|default:"N/A" }}</td>
+                        <td>{{ data.steps|default:"N/A" }}</td>
+                        <td>{{ data.sleep_duration|default:"N/A" }}</td>
+                        <td>{{ data.stress_indicator|default:"N/A" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">No data available</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

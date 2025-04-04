@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGuard Pro | Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        body {
+            background: #f4f7fa;
+            font-family: 'Poppins', sans-serif;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .navbar {
+            background: #2c3e50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            color: #ecf0f1;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            color: #ffcc00; /* Matches --secondary-color from index.html */
+            font-size: 1.8rem;
+        }
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .stat-card {
+            padding: 1.5rem;
+            border-left: 4px solid #3498db;
+        }
+        .stat-card h4 {
+            color: #7f8c8d;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .btn-custom {
+            background: #3498db;
+            color: #fff;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        .btn-custom:hover {
+            background: #2980b9;
+            color: #fff;
+        }
+        .table {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+        .table th {
+            background: #3498db;
+            color: #fff;
+            font-weight: 600;
+        }
+        .login-alert {
+            background: #e74c3c;
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+        .login-alert a {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+
+{% if not request.session.email %}
+    <div class="login-alert">
+        <h4>Access Denied</h4>
+        <p>You must be logged in as an admin to view this page. Please <a href="{% url 'admin_login' %}">log in</a>.</p>
+    </div>
+{% else %}
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-heartbeat"></i> StressGuard Pro Admin
+        </a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="navbar-nav">
+                <a href="{% url 'admin_manage_users' %}" class="btn btn-custom me-2">Manage Users</a>
+                <a href="{% url 'admin_manage_recommendations' %}" class="btn btn-custom me-2">Manage Recommendations</a>
+                <a href="{% url 'admin_manage_resources' %}" class="btn btn-custom me-2">Manage Resources</a>
+                <a href="{% url 'admin_logout' %}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <!-- Summary Statistics -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card stat-card text-center">
+                <h4>Total Users</h4>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card text-center">
+                <h4>Total Assessments</h4>
+                <h2>{{ total_assessments }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card text-center">
+                <h4>Avg Stress Score</h4>
+                <h2>{{ avg_stress_score }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card text-center">
+                <h4>Max Stress Score</h4>
+                <h2>{{ max_stress_score }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Section -->
+    <div class="section-title">User Details</div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card p-4">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Experience (Years)</th>
+                            <th>Work Role</th>
+                            <th>Stress Assessment Trends</th>
+                            <th>Keyboard Review</th>
+                            <th>Feedback Details</th>
+                            <th>Voice Patterns</th>
+                            <th>Screen Time (Hours)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>{{ user.email_id }}</td>
+                            <td>{{ user.department|default:"Not specified" }}</td>
+                            <td>{{ user.years_of_experience|default:"Not specified" }}</td>
+                            <td>{{ user.work_role|default:"Not specified" }}</td>
+                            <td>{{ user.stress_trend|floatformat:1|default:"N/A" }}</td>
+                            <td>{{ user.keyboard_review|default:"0" }}</td>
+                            <td>{{ user.feedback_details|floatformat:1|default:"N/A" }}</td>
+                            <td>{{ user.voice_patterns|floatformat:1|default:"N/A" }}</td>
+                            <td>{{ user.screen_time|floatformat:1|default:"0" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="11" class="text-center">No users found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+</body>
+</html>

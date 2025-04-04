@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | Secure Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #1b1b2f);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background Elements */
+        .bg-bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .bg-bubbles li {
+            position: absolute;
+            list-style: none;
+            background: rgba(255, 255, 255, 0.15);
+            animation: bubble 20s linear infinite;
+            border-radius: 50%;
+        }
+
+        /* Keyframe Animations */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes bubble {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-1000px) scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* Login Container */
+        .auth-box {
+            background: rgba(255, 255, 255, 0.95);
+            width: 400px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .auth-box:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Logo Design */
+        .admin-logo {
+            width: 100px;
+            height: 100px;
+            background: #2a2a72;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(42, 42, 114, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .admin-logo:hover {
+            transform: rotate(360deg) scale(1.1);
+        }
+
+        .admin-logo i {
+            color: #fff;
+            font-size: 2.5rem;
+        }
+
+        /* Form Elements */
+        .form-title {
+            text-align: center;
+            color: #2a2a72;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #2a2a72;
+            box-shadow: 0 0 10px rgba(42, 42, 114, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            background: #2a2a72;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: #3939a3;
+            letter-spacing: 2px;
+        }
+
+        /* Enhanced Error Message */
+        .messages {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .messages li {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            padding: 12px;
+            background: #f8d7da;
+            border-radius: 8px;
+            display: block;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Show Password Toggle */
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            z-index: 2;
+        }
+
+        .toggle-password:hover {
+            color: #2a2a72;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .auth-box {
+                width: 90%;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <ul class="bg-bubbles">
+        <li style="left: 10%; animation-delay: 0s"></li>
+        <li style="left: 20%; animation-delay: 2s; animation-duration: 15s"></li>
+        <li style="left: 30%; animation-delay: 4s"></li>
+        <li style="left: 40%; animation-delay: 6s; animation-duration: 18s"></li>
+        <li style="left: 50%; animation-delay: 8s"></li>
+        <li style="left: 60%; animation-delay: 10s"></li>
+        <li style="left: 70%; animation-delay: 12s"></li>
+        <li style="left: 80%; animation-delay: 14s"></li>
+        <li style="left: 90%; animation-delay: 16s"></li>
+    </ul>
+
+    <div class="auth-box">
+        <div class="admin-logo">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2 class="form-title">Admin Portal</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    <i class="fas fa-exclamation-circle"></i> {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" name="email" id="email"
+                       placeholder="Admin Email" required>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" name="password" id="password"
+                       placeholder="Password" required>
+                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="submit-btn">Secure Login</button>
+        </form>
+    </div>
+
+    <script>
+        // Toggle Password Visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function(e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Add real-time validation if needed
+        document.getElementById('email').addEventListener('input', function() {
+            const errorMsg = document.querySelector('.messages');
+            if (errorMsg) errorMsg.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

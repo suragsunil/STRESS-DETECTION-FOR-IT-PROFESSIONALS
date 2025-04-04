@@ -1,0 +1,42 @@
+{% extends 'settings.html' %}
+
+{% block title %}StressGuard Pro | Resources{% endblock %}
+
+{% block content %}
+    <section class="resources-section">
+        <div class="section-header">
+            <h2>Stress Management Resources</h2>
+        </div>
+        
+        {% if resources %}
+            <div class="resources-grid">
+                {% for resource in resources %}
+                    <div class="resource-card">
+                        <h3>{{ resource.title }} <span class="category">({{ resource.get_category_display }})</span></h3>
+                        <p>{{ resource.description }}</p>
+                        <div class="resource-links">
+                            {% if resource.url %}
+                                <a href="{{ resource.url }}" target="_blank" class="resource-link">
+                                    <i class="fas fa-link"></i> Visit Link
+                                </a>
+                            {% endif %}
+                            {% if resource.file %}
+                                <a href="{{ resource.file.url }}" target="_blank" class="resource-link">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-resources">
+                <p>No resources available at this time.</p>
+            </div>
+        {% endif %}
+        
+        <a href="{% url 'recommendation_dashboard' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </section>
+{% endblock %}

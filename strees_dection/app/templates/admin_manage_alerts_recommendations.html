@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Alerts & Recommendations | Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-color);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            z-index: -1;
+            opacity: 0.6;
+        }
+        
+        .navbar {
+            background: var(--secondary-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background: #fff;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-custom {
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-custom:hover {
+            background: #2980b9;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #f1f3f5;
+        }
+        
+        .table tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-radius: 8px;
+        }
+        
+        .badge-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .badge-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .badge-success {
+            background-color: var(--success-color);
+        }
+        
+        .badge-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .badge-info {
+            background-color: var(--info-color);
+        }
+        
+        .priority-high {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .priority-medium {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .priority-low {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5em 0.8em;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .status-acknowledged {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-completed {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-message {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-message i {
+            margin-right: 0.8rem;
+            font-size: 1.2rem;
+        }
+        
+        .btn-action {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                margin: 2rem 0 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-nav .btn {
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+            
+            .table td, .table th {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'admin_dashboard' %}">
+                <i class="fas fa-shield-alt"></i> Admin Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <a href="{% url 'admin_manage_users' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                        <i class="fas fa-users me-1"></i> Manage Users
+                    </a>
+                    <a href="{% url 'admin_manage_alerts_recommendations' %}" class="btn btn-custom me-2 mb-2 mb-lg-0 active">
+                        <i class="fas fa-bell me-1"></i> Alerts & Recommendations
+                    </a>
+                    <a href="{% url 'admin_logout' %}" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt me-1"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Messages -->
+        {% if messages %}
+        <div class="row" data-aos="fade-up">
+            <div class="col-md-12">
+                {% for message in messages %}
+                <div class="alert-message alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Alerts Section -->
+        <h2 class="section-title" data-aos="fade-up">
+            <i class="fas fa-exclamation-triangle me-2"></i> Manage Alerts
+        </h2>
+        
+        <div class="row" data-aos="fade-up">
+            <div class="col-md-12">
+                <div class="card p-4">
+                    <a href="{% url 'admin_create_alert' %}" class="btn btn-custom mb-3">
+                        <i class="fas fa-plus me-1"></i> Create New Alert
+                    </a>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Message</th>
+                                    <th>Threshold</th>
+                                    <th>Triggered At</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alert in alerts %}
+                                <tr data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:"50" }}">
+                                    <td>
+                                        <strong>{{ alert.user.email_id }}</strong>
+                                        {% if alert.user.first_name or alert.user.last_name %}
+                                            <br><small>{{ alert.user.first_name }} {{ alert.user.last_name }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ alert.message }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ alert.threshold }}</span>
+                                    </td>
+                                    <td>{{ alert.triggered_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if alert.is_acknowledged %}
+                                            <span class="status-badge status-acknowledged">
+                                                <i class="fas fa-check-circle me-1"></i> Acknowledged
+                                            </span>
+                                        {% else %}
+                                            <span class="status-badge status-active">
+                                                <i class="fas fa-exclamation-circle me-1"></i> Active
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'admin_edit_alert' alert.id %}" class="btn btn-sm btn-primary btn-action">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'admin_delete_alert' alert.id %}" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Are you sure you want to delete this alert?')">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="empty-state">
+                                            <i class="fas fa-bell-slash"></i>
+                                            <h4>No Alerts Found</h4>
+                                            <p>There are currently no alerts in the system.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <h2 class="section-title" data-aos="fade-up">
+            <i class="fas fa-lightbulb me-2"></i> Manage Recommendations
+        </h2>
+        
+        <div class="row" data-aos="fade-up">
+            <div class="col-md-12">
+                <div class="card p-4">
+                    <a href="{% url 'admin_create_recommendation' %}" class="btn btn-custom mb-3">
+                        <i class="fas fa-plus me-1"></i> Create New Recommendation
+                    </a>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Recommendation</th>
+                                    <th>Category</th>
+                                    <th>Priority</th>
+                                    <th>Created At</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for recommendation in recommendations %}
+                                <tr data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:"50" }}">
+                                    <td>
+                                        <strong>{{ recommendation.user.email_id }}</strong>
+                                        {% if recommendation.user.first_name or recommendation.user.last_name %}
+                                            <br><small>{{ recommendation.user.first_name }} {{ recommendation.user.last_name }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ recommendation.recommendation_text|truncatechars:50 }}</td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ recommendation.get_category_display }}</span>
+                                    </td>
+                                    <td>
+                                        {% if recommendation.priority == 'high' %}
+                                            <span class="badge priority-high">
+                                                <i class="fas fa-exclamation-circle me-1"></i> High
+                                            </span>
+                                        {% elif recommendation.priority == 'medium' %}
+                                            <span class="badge priority-medium">
+                                                <i class="fas fa-exclamation me-1"></i> Medium
+                                            </span>
+                                        {% else %}
+                                            <span class="badge priority-low">
+                                                <i class="fas fa-info-circle me-1"></i> Low
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ recommendation.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        {% if recommendation.is_completed %}
+                                            <span class="status-badge status-completed">
+                                                <i class="fas fa-check-circle me-1"></i> Completed
+                                            </span>
+                                        {% else %}
+                                            <span class="status-badge status-pending">
+                                                <i class="fas fa-clock me-1"></i> Pending
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'admin_edit_recommendation' recommendation.id %}" class="btn btn-sm btn-primary btn-action">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'admin_delete_recommendation' recommendation.id %}" class="btn btn-sm btn-danger btn-action" onclick="return confirm('Are you sure you want to delete this recommendation?')">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <div class="empty-state">
+                                            <i class="fas fa-lightbulb"></i>
+                                            <h4>No Recommendations Found</h4>
+                                            <p>There are currently no recommendations in the system.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Add active class to current nav link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUrl = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.classList.add('active');
+                    link.classList.add('shadow');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

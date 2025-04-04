@@ -1,0 +1,435 @@
+{% extends 'settings.html' %}
+
+{% block title %}Account Privacy - StressGuard Pro{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Account Privacy Dashboard</h1>
+    <p class="lead">Explore your personal details, feedback history, and stress assessments below.</p>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="user-details">
+        <h2>
+            <button class="toggle-btn" data-target="user-details-content">
+                Your Details <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div id="user-details-content" class="collapsible-content card">
+            <div class="card-body">
+                <div class="user-info">
+                    <div class="profile-pic-container">
+                        {% if user.image %}
+                        <img src="{{ user.image.url }}" alt="Profile Picture" class="profile-pic" onclick="showImage(this.src)">
+                        {% else %}
+                        <div class="no-pic">No Image</div>
+                        {% endif %}
+                    </div>
+                    <div class="user-text">
+                        <p><strong>Name:</strong> {{ user.first_name|default:"Not provided" }} {{ user.last_name|default:"" }}</p>
+                        <p><strong>Email:</strong> {{ user.email_id|default:"Not provided" }}</p>
+                        <p><strong>Department:</strong> {{ user.department|default:"Not specified" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="feedback-view">
+        <h2>
+            <button class="toggle-btn" data-target="feedback-view-content">
+                Feedback History <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div id="feedback-view-content" class="collapsible-content card">
+            <div class="card-body">
+                {% if feedbacks %}
+                <div class="feedback-list">
+                    {% for feedback in feedbacks %}
+                    <div class="feedback-item" data-tooltip="Assessment Date: {{ feedback.assessment.date|date:'F d, Y' }}">
+                        <div class="feedback-header">
+                            <span class="rating">Rating: {{ feedback.rating }}/5 <i class="fas fa-star"></i></span>
+                            <span class="date">{{ feedback.date|date:"F d, Y H:i" }}</span>
+                        </div>
+                        <p class="feedback-text">{{ feedback.feedback_text }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">No feedback submitted yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="stress-assessment-view">
+        <h2>
+            <button class="toggle-btn" data-target="stress-assessment-view-content">
+                Stress Assessment History <i class="fas fa-chevron-down"></i>
+            </button>
+        </h2>
+        <div id="stress-assessment-view-content" class="collapsible-content card">
+            <div class="card-body">
+                {% if stress_assessments %}
+                <div class="assessment-list">
+                    {% for assessment in stress_assessments %}
+                    <div class="assessment-item" data-tooltip="Score: {{ assessment.stress_score }}/100">
+                        <div class="assessment-header">
+                            <span class="date">{{ assessment.date|date:"F d, Y H:i" }}</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ assessment.stress_score }}%;"></div>
+                            </div>
+                        </div>
+                        <p class="recommendation"><strong>Recommendations:</strong> {{ assessment.recommendations }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">No stress assessments recorded yet.</div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal for Enlarged Image -->
+<div id="image-modal" class="modal">
+    <span class="modal-close" onclick="closeModal()">×</span>
+    <img id="modal-image" class="modal-content" src="">
+</div>
+
+<style>
+    .container {
+        max-width: 1100px;
+        margin: 100px auto 2rem;
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 2.8rem;
+        color: var(--dark-blue);
+        text-align: center;
+        margin-bottom: 1rem;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .lead {
+        font-size: 1.3rem;
+        color: #666;
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+        color: var(--primary-blue);
+        margin-bottom: 1.5rem;
+    }
+
+    .toggle-btn {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: var(--primary-blue);
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        padding: 0;
+        transition: color 0.3s ease;
+    }
+
+    .toggle-btn:hover {
+        color: var(--accent-orange);
+    }
+
+    .toggle-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .toggle-btn.active i {
+        transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+        display: none;
+    }
+
+    .collapsible-content.active {
+        display: block;
+    }
+
+    .card {
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .profile-pic-container {
+        flex-shrink: 0;
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .profile-pic:hover {
+        transform: scale(1.1);
+    }
+
+    .no-pic {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-text p {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+    }
+
+    .user-text strong {
+        color: var(--dark-blue);
+        margin-right: 0.5rem;
+    }
+
+    .feedback-list, .assessment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .feedback-item, .assessment-item {
+        background: var(--light-bg);
+        border-radius: 10px;
+        padding: 1.5rem;
+        position: relative;
+        transition: background 0.3s ease;
+    }
+
+    .feedback-item:hover, .assessment-item:hover {
+        background: rgba(42, 94, 232, 0.05);
+    }
+
+    .feedback-item:hover::after, .assessment-item:hover::after {
+        content: attr(data-tooltip);
+        position: absolute;
+        top: -2.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--dark-blue);
+        color: var(--white);
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        z-index: 10;
+    }
+
+    .feedback-header, .assessment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .rating {
+        font-size: 1.1rem;
+        color: var(--accent-orange);
+    }
+
+    .rating i {
+        margin-left: 0.3rem;
+    }
+
+    .date {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .feedback-text, .recommendation {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .recommendation strong {
+        color: var(--primary-blue);
+    }
+
+    .progress-bar {
+        width: 200px;
+        height: 15px;
+        background: #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-blue), var(--accent-orange));
+        transition: width 0.5s ease;
+    }
+
+    .alert {
+        background: rgba(42, 94, 232, 0.1);
+        border: none;
+        border-radius: 10px;
+        color: var(--dark-blue);
+        font-size: 1.2rem;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        max-width: 80%;
+        max-height: 80%;
+        border-radius: 10px;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2rem;
+        color: var(--white);
+        cursor: pointer;
+    }
+
+    .messages {
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+        background: rgba(42, 94, 232, 0.2);
+        color: var(--primary-blue);
+        border-radius: 5px;
+        padding: 0.75rem;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            margin: 80px 1rem 1rem;
+            padding: 1rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+        }
+
+        h2, .toggle-btn {
+            font-size: 1.6rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .user-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .profile-pic, .no-pic {
+            width: 80px;
+            height: 80px;
+        }
+
+        .user-text p, .feedback-text, .recommendation {
+            font-size: 1rem;
+        }
+
+        .feedback-header, .assessment-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+            content.classList.toggle('active');
+            btn.classList.toggle('active');
+        });
+    });
+
+    function showImage(src) {
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-image');
+        modalImg.src = src;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('image-modal');
+        modal.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = document.querySelectorAll('.alert-success');
+        messages.forEach(msg => {
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}

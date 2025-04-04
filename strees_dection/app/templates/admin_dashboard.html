@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGuard Pro | Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #ff6b6b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-color);
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            z-index: -1;
+            opacity: 0.6;
+        }
+        
+        .navbar {
+            background: var(--secondary-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.5px;
+        }
+        
+        .navbar-brand i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+        
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background: #fff;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card {
+            padding: 1.8rem;
+            border-left: 5px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg);
+            z-index: 0;
+        }
+        
+        .stat-card h4 {
+            color: #6c757d;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            position: relative;
+        }
+        
+        .stat-card h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .stat-card i {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 2.5rem;
+            opacity: 0.2;
+            color: var(--primary-color);
+        }
+        
+        .btn-custom {
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-custom:hover {
+            background: #2980b9;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            padding: 1rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #f1f3f5;
+        }
+        
+        .table tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .login-alert {
+            background: var(--danger-color);
+            color: #fff;
+            padding: 2.5rem;
+            text-align: center;
+            border-radius: 12px;
+            margin: 3rem auto;
+            max-width: 650px;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+            transform: translateY(0);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        .login-alert h4 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .login-alert p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-alert a {
+            color: #fff;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin: 3rem 0 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .badge-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .badge-success {
+            background-color: var(--success-color);
+        }
+        
+        .badge-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .badge-info {
+            background-color: var(--info-color);
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        .progress-bar {
+            background-color: var(--primary-color);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                margin: 2rem 0 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stat-card h2 {
+                font-size: 1.6rem;
+            }
+            
+            .stat-card i {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+{% if not request.session.email %}
+    <div class="login-alert" data-aos="zoom-in">
+        <h4><i class="fas fa-lock me-2"></i>Access Denied</h4>
+        <p>You must be logged in as an admin to view this page.</p>
+        <a href="{% url 'admin_login' %}" class="btn btn-light btn-lg">Log In Now</a>
+    </div>
+{% else %}
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-shield-alt"></i> StressGuard Pro <span class="badge bg-accent ms-2">Admin</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav ms-auto">
+                <a href="{% url 'admin_manage_users' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                    <i class="fas fa-users me-1"></i> Manage Users
+                </a>
+                <a href="{% url 'admin_manage_recommendations' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                    <i class="fas fa-lightbulb me-1"></i> Recommendations
+                </a>
+                <a href="{% url 'admin_manage_resources' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                    <i class="fas fa-book me-1"></i> Resources
+                </a>
+                <a href="{% url 'management_dashboard' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                    <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                </a>
+                <a href="{% url 'admin_manage_alerts_recommendations' %}" class="btn btn-custom me-2 mb-2 mb-lg-0">
+                    <i class="fas fa-bell me-1"></i> Alerts
+                </a>
+                <a href="{% url 'admin_logout' %}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <!-- Summary Statistics -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card">
+                <i class="fas fa-users"></i>
+                <h4>Total Users</h4>
+                <h2>{{ total_users }}</h2>
+                <div class="progress mt-2">
+                    <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card" style="border-left-color: var(--success-color);">
+                <i class="fas fa-clipboard-check" style="color: var(--success-color);"></i>
+                <h4>Total Assessments</h4>
+                <h2>{{ total_assessments }}</h2>
+                <div class="progress mt-2">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card" style="border-left-color: var(--info-color);">
+                <i class="fas fa-chart-line" style="color: var(--info-color);"></i>
+                <h4>Avg Stress Score</h4>
+                <h2>{{ avg_stress_score }}</h2>
+                <div class="progress mt-2">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card" style="border-left-color: var(--warning-color);">
+                <i class="fas fa-exclamation-triangle" style="color: var(--warning-color);"></i>
+                <h4>Max Stress Score</h4>
+                <h2>{{ max_stress_score }}</h2>
+                <div class="progress mt-2">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Section -->
+    <h2 class="section-title" data-aos="fade-up">
+        <i class="fas fa-user-cog me-2"></i> User Management
+    </h2>
+    
+    <div class="row mt-4" data-aos="fade-up">
+        <div class="col-md-12">
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Experience</th>
+                                <th>Work Role</th>
+                                <th>Stress Trend</th>
+                                <th>Keyboard</th>
+                                <th>Feedback</th>
+                                <th>Voice</th>
+                                <th>Screen Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td><span class="badge bg-secondary">#{{ user.id }}</span></td>
+                                <td><strong>{{ user.first_name }} {{ user.last_name }}</strong></td>
+                                <td>{{ user.email_id }}</td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        {{ user.department|default:"N/A" }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if user.years_of_experience %}
+                                        <span class="badge bg-info">{{ user.years_of_experience }} yrs</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.work_role|default:"N/A" }}</td>
+                                <td>
+                                    {% if user.stress_trend %}
+                                        {% if user.stress_trend > 7 %}
+                                            <span class="badge bg-danger">{{ user.stress_trend|floatformat:1 }}</span>
+                                        {% elif user.stress_trend > 4 %}
+                                            <span class="badge bg-warning">{{ user.stress_trend|floatformat:1 }}</span>
+                                        {% else %}
+                                            <span class="badge bg-success">{{ user.stress_trend|floatformat:1 }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.keyboard_review %}
+                                        <span class="badge bg-primary">{{ user.keyboard_review }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">0</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.feedback_details %}
+                                        <span class="badge bg-info">{{ user.feedback_details|floatformat:1 }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.voice_patterns %}
+                                        <span class="badge bg-primary">{{ user.voice_patterns|floatformat:1 }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.screen_time %}
+                                        <span class="badge bg-dark">{{ user.screen_time|floatformat:1 }} hrs</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">0 hrs</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="11" class="text-center py-4">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i> No users found in the system.
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    // Initialize animations
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+    });
+    
+    // Add active class to current nav link
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUrl = window.location.pathname;
+        const navLinks = document.querySelectorAll('.navbar-nav a');
+        
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentUrl) {
+                link.classList.add('active');
+                link.classList.add('shadow');
+            }
+        });
+    });
+</script>
+</body>
+</html>

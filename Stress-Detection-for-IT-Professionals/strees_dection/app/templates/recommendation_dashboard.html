@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGuard Pro | User's Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-blue: #2A5EE8;
+            --dark-blue: #1A3A7A;
+            --accent-orange: #FF6B35;
+            --light-bg: #F8FAFF;
+            --white: #FFFFFF;
+            --rgb-glow: rgba(42, 94, 232, 0.4), rgba(255, 107, 53, 0.4), rgba(255, 204, 0, 0.4);
+            --shadow-color: rgba(0, 0, 0, 0.12);
+            --alert-red: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light-bg);
+            color: #333;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(42, 94, 232, 0.05), rgba(255, 107, 53, 0.05));
+            animation: gradientFlow 20s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientFlow {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(50px) translateY(50px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        /* Navbar Styles */
+        nav {
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            padding: 1.5rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .logo i {
+            color: var(--accent-orange);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-link {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+            background: rgba(255, 107, 53, 0.2);
+        }
+
+        /* IT Focus Section */
+        .it-focus {
+            padding: 6rem 10%;
+        }
+
+        .it-focus h2 {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 3.5rem;
+            color: var(--dark-blue);
+        }
+
+        .user-info {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            margin-bottom: 2rem;
+        }
+
+        .user-info img {
+            max-width: 150px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: var(--primary-blue);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-orange);
+        }
+
+        /* Alert Pop-up */
+        .alert-popup {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            z-index: 2000;
+            display: none;
+            border-left: 5px solid var(--alert-red);
+        }
+
+        .alert-popup.show {
+            display: block;
+        }
+
+        .alert-popup p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .alert-popup .close-btn {
+            background: var(--alert-red);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            float: right;
+            transition: background 0.3s ease;
+        }
+
+        .alert-popup .close-btn:hover {
+            background: var(--accent-orange);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-blue);
+            color: var(--white);
+            padding: 5rem 10% 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-content h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .social-links a {
+            color: var(--white);
+            margin-right: 1.2rem;
+            font-size: 1.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-orange);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--dark-blue);
+                flex-direction: column;
+                padding: 1.5rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .it-focus {
+                padding: 4rem 5%;
+            }
+
+            .it-focus h2 {
+                font-size: 2rem;
+            }
+
+            .alert-popup {
+                width: 90%;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                StressGuard Pro
+            </div>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a href="/settings" class="nav-link">Settings</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/userprofile/" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+                </div>
+                <div class="nav-item">
+                    <a href="/user_logout/" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="it-focus">
+        <h2>Welcome, {{ user.first_name }} {{ user.last_name }}</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="user-info">
+            {% if user.image %}
+                <img src="{{ user.image.url }}" alt="Profile Picture">
+            {% else %}
+                <i class="fas fa-user-circle" style="font-size: 150px; color: var(--primary-blue);"></i>
+            {% endif %}
+            <p><strong>Email:</strong> {{ user.email_id }}</p>
+            <p><strong>Department:</strong> {{ user.department|default:"Not specified" }}</p>
+            <p><strong>Work Role:</strong> {{ user.work_role|default:"Not specified" }}</p>
+            <p><strong>Years of Experience:</strong> {{ user.years_of_experience|default:"Not specified" }}</p>
+        </div>
+
+        <h3>Get Started</h3>
+        <div class="action-buttons">
+            <a href="/stress_assessment/" class="action-btn">Take Stress Assessment</a>
+            <a href="{% url 'data_collection_dashboard' %}" class="action-btn">View Data Dashboard</a>
+            <a href="{% url 'view_recommendations' %}" class="action-btn">View Alerts & Recommendations</a>
+            <a href="{% url 'view_resources' %}" class="action-btn">Explore Resources</a>
+        </div>
+    </section>
+
+    <!-- Alert Pop-up -->
+    {% if pending_alerts > 0 %}
+    <div class="alert-popup show">
+        <p>You have <strong>{{ pending_alerts }}</strong> pending alert{{ pending_alerts|pluralize }}! <a href="{% url 'view_recommendations' %}">View now</a></p>
+        <button class="close-btn" onclick="this.parentElement.classList.remove('show')">Close</button>
+    </div>
+    {% endif %}
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h4>StressGuard Pro</h4>
+                <p>Empowering tech professionals with intelligent stress management solutions.</p>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <p>support@stressguardpro.com</p>
+                <p>+1 (555) 123-4567</p>
+            </div>
+            <div>
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 3rem;">© 2024 StressGuard Pro. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% extends 'settings.html' %}
+
+{% block title %}StressGuard Pro | User's Home{% endblock %}
+
+{% block content %}
+    <section class="it-focus">
+        <div class="welcome-header">
+            <h2>Welcome, {{ user.first_name }} {{ user.last_name }}</h2>
+            <p class="welcome-subtitle">Your personalized stress management hub</p>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="user-info-card">
+            <div class="user-avatar-container">
+                {% if user.image %}
+                    <img src="{{ user.image.url }}" alt="Profile Picture" class="user-avatar">
+                {% else %}
+                    <i class="fas fa-user-circle user-icon"></i>
+                {% endif %}
+                <div class="avatar-overlay">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </div>
+            <div class="user-details">
+                <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ user.email_id }}</p>
+                <p><i class="fas fa-building"></i> <strong>Department:</strong> {{ user.department|default:"Not specified" }}</p>
+                <p><i class="fas fa-briefcase"></i> <strong>Work Role:</strong> {{ user.work_role|default:"Not specified" }}</p>
+                <p><i class="fas fa-clock"></i> <strong>Years of Experience:</strong> {{ user.years_of_experience|default:"Not specified" }}</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h3>Get Started</h3>
+        </div>
+        <div class="action-buttons">
+            <a href="/stress_assessment/" class="action-btn">
+                <i class="fas fa-heartbeat"></i> Take Stress Assessment
+            </a>
+            <a href="{% url 'data_collection_dashboard' %}" class="action-btn">
+                <i class="fas fa-database"></i> View Data Dashboard
+            </a>
+            <a href="{% url 'view_recommendations' %}" class="action-btn">
+                <i class="fas fa-lightbulb"></i> View Alerts & Recommendations
+            </a>
+            <a href="{% url 'view_resources' %}" class="action-btn">
+                <i class="fas fa-book"></i> Explore Resources
+            </a>
+        </div>
+    </section>
+
+    <!-- Alert Pop-up -->
+    {% if pending_alerts > 0 %}
+    <div class="alert-popup show">
+        <p><i class="fas fa-exclamation-circle"></i> You have <strong>{{ pending_alerts }}</strong> pending alert{{ pending_alerts|pluralize }}! 
+           <a href="{% url 'view_recommendations' %}" class="alert-link">View now</a>
+        </p>
+        <button class="close-btn" onclick="this.parentElement.classList.remove('show')">Close</button>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.sidebar');
+
+        hamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+{% endblock %}

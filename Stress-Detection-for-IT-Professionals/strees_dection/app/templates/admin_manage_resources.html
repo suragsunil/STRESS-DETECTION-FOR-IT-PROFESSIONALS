@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGuard Pro | Manage Resources</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        body {
+            background: #f4f7fa;
+            font-family: 'Poppins', sans-serif;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .navbar {
+            background: #2c3e50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            color: #ecf0f1;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            color: #ffcc00; /* Matches --secondary-color from index.html */
+            font-size: 1.8rem;
+        }
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+        .btn-custom {
+            background: #3498db;
+            color: #fff;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        .btn-custom:hover {
+            background: #2980b9;
+            color: #fff;
+        }
+        .table {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+        .table th {
+            background: #3498db;
+            color: #fff;
+            font-weight: 600;
+        }
+        .login-alert {
+            background: #e74c3c;
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+        .login-alert a {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+{% if not request.session.email %}
+    <div class="login-alert">
+        <h4>Access Denied</h4>
+        <p>You must be logged in as an admin to view this page. Please <a href="{% url 'admin_login' %}">log in</a>.</p>
+    </div>
+{% else %}
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-heartbeat"></i> StressGuard Pro Admin
+        </a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="navbar-nav">
+                <a href="{% url 'admin_manage_users' %}" class="btn btn-custom me-2">Manage Users</a>
+                <a href="{% url 'admin_manage_recommendations' %}" class="btn btn-custom me-2">Manage Recommendations</a>
+                <a href="{% url 'admin_manage_resources' %}" class="btn btn-custom me-2 active">Manage Resources</a>
+                <a href="{% url 'admin_logout' %}" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <!-- Messages -->
+    {% if messages %}
+        <div class="row">
+            <div class="col-md-12">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Add Resource Form -->
+    <div class="section-title">Add New Resource</div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select class="form-control" id="category" name="category" required>
+                            <option value="VIDEO">Video</option>
+                            <option value="ARTICLE">Article</option>
+                            <option value="AUDIO">Audio</option>
+                            <option value="EXERCISE">Exercise</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="url">URL (optional)</label>
+                        <input type="url" class="form-control" id="url" name="url">
+                    </div>
+                    <div class="form-group">
+                        <label for="file">File (optional)</label>
+                        <input type="file" class="form-control" id="file" name="file">
+                    </div>
+                    <button type="submit" class="btn btn-custom">Add Resource</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources List -->
+    <div class="section-title">Existing Resources</div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card p-4">
+                {% if resources %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>URL</th>
+                                <th>File</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for resource in resources %}
+                            <tr>
+                                <td>{{ resource.title }}</td>
+                                <td>{{ resource.get_category_display }}</td>
+                                <td>{{ resource.description }}</td>
+                                <td>
+                                    {% if resource.url %}
+                                        <a href="{{ resource.url }}" target="_blank">{{ resource.url|truncatechars:30 }}</a>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if resource.file %}
+                                        <a href="{{ resource.file.url }}" target="_blank">Download</a>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-center">No resources available at this time.</p>
+                {% endif %}
+                <div class="mt-3">
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-custom">Back to Admin Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

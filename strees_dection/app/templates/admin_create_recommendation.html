@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Recommendation | Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f7fa;
+            font-family: 'Poppins', sans-serif;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .container {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            background: #fff;
+            padding: 2rem;
+        }
+        .btn-custom {
+            background: #3498db;
+            color: #fff;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        .btn-custom:hover {
+            background: #2980b9;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2 class="mb-4">Create New Recommendation</h2>
+            {% if messages %}
+            <div class="row">
+                <div class="col-md-12">
+                    {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'success' %}success{% else %}danger{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="user" class="form-label">Select User</label>
+                    <select name="user" id="user" class="form-select" required>
+                        <option value="">Select a user</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.email_id }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="stress_assessment" class="form-label">Related Stress Assessment (Optional)</label>
+                    <select name="stress_assessment" id="stress_assessment" class="form-select">
+                        <option value="">None</option>
+                        {% for assessment in stress_assessments %}
+                        <option value="{{ assessment.id }}">{{ assessment.user.email_id }} - {{ assessment.date|date:"Y-m-d H:i" }} (Score: {{ assessment.stress_score }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="recommendation_text" class="form-label">Recommendation Text</label>
+                    <textarea name="recommendation_text" id="recommendation_text" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="category" id="category" class="form-select" required>
+                        {% for value, label in categories %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="priority" class="form-label">Priority (1-5)</label>
+                    <input type="number" name="priority" id="priority" class="form-control" min="1" max="5" required>
+                </div>
+                <button type="submit" class="btn btn-custom">Create Recommendation</button>
+                <a href="{% url 'admin_manage_alerts_recommendations' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/inter-ui/3.19.3/inter.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2B4C7E;
+            --secondary-color: #567EBB;
+            --accent-color: #3182CE;
+            --text-primary: #1A202C;
+            --text-secondary: #4A5568;
+            --background-light: #F8FAFC;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--background-light) 0%, #e9ecef 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+
+        .form-container {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8f9fa;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-color);
+            background: #ffffff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+        }
+
+        input[readonly] {
+            background-color: #f1f3f5;
+            cursor: not-allowed;
+        }
+
+        button {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43, 76, 126, 0.25);
+        }
+
+        button:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .file-input-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-input-container input[type="file"] {
+            padding: 1rem;
+            border: 2px dashed #e9ecef;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .file-input-container input[type="file"]:hover {
+            border-color: var(--accent-color);
+            background: #ffffff;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.5rem;
+                border-radius: 12px;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Edit Profile</h2>
+        {% if edt %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="{{ edt.first_name }}" required>
+
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" value="{{ edt.last_name }}" required>
+
+            <label for="email_id">Email Address</label>
+            <input type="email" id="email_id" name="email_id" value="{{ edt.email_id }}" readonly>
+
+            <label for="department">Department</label>
+            <select id="department" name="department" required>
+                <option value="">Select Department</option>
+                <option value="IT" {% if edt.department == "IT" %}selected{% endif %}>IT</option>
+                <option value="HR" {% if edt.department == "HR" %}selected{% endif %}>HR</option>
+                <option value="Finance" {% if edt.department == "Finance" %}selected{% endif %}>Finance</option>
+                <option value="Marketing" {% if edt.department == "Marketing" %}selected{% endif %}>Marketing</option>
+            </select>
+
+            <label for="years_of_experience">Years of Experience</label>
+            <input type="number" id="years_of_experience" name="years_of_experience" value="{{ edt.years_of_experience }}" min="0" required>
+
+            <label for="work_role">Work Role</label>
+            <input type="text" id="work_role" name="work_role" value="{{ edt.work_role }}" required>
+
+            <div class="file-input-container">
+                <label for="image">Profile Picture</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+
+            <button type="submit">Update Profile</button>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>
